@@ -1,0 +1,19 @@
+import React from 'react';
+import pagenotfound from '../Images/404.png'; // Adjust the path as needed
+import { NavLink } from 'react-router-dom';
+
+function Error404() {
+  return (
+    <div className='flex flex-col items-center justify-center h-screen '>
+       <img src={pagenotfound} className='' alt="" />
+       <div className="flex flex-col items-center justify-center mt-10 space-y-3 ">
+        <h1 className='text-[#1c2d35] font-semibold text-xl '>Page not found </h1>
+        <NavLink to={'/'}>
+        <button className='bg-[#1c2d35] text-white w-[8rem] rounded-full p-1  capitalize font-sans'>go  home</button>
+        </NavLink>
+       </div>
+    </div>
+  )
+}
+
+export default Error404;
