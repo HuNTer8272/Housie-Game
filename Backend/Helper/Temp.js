@@ -12,7 +12,7 @@
     5.clock: a clock object for managing the clock for all the room 
     6.timer: the variable that define the timer for all the different room 
    
-   *Functions for room '
+   *Functions for room 
    0.Connection
    1.Creating a room
    2.Join room
@@ -36,14 +36,54 @@ const { v4: uuidv4 } = require('uuid');
 const roomInstance = [];
 
 // Function that will fetch the appropriate class instance
-const fetchRoomInstance = (roomId) => {
-  let room = roomInstance.find((room) => room.roomId === roomId);
-  return room ? room.instance : null;
-};
+/*
+  !This is causing the error  
+*/
+// const fetchRoomInstance = (roomId) => {
+//   let room = roomInstance.find((room) => room.roomId === roomId);
+//   return room ? room.instance : null;
+// };
+
+
+    /* 
+     *New fetchroomInstance Method
+     ?param: roomId:string 
+     !roomInstance:[{roomId:string,instance:Room}]
+     TODO: fix the recurive issue of this code 
+    */
+
+   const fetchRoomInstance = (roomId) => {
+    /*
+     *If the roomInstance is empty return null 
+    */
+     if(roomInstance.length === 0){
+       return null
+      }
+      
+      
+      // looping through every room
+      for(let room in roomInstance){
+        if(roomInstance[room].roomId === roomId){
+          return roomInstance[room].instance?roomInstance[room].instance:null;
+        }
+      }
+      return null ;
+    };
 
 // Function to create the an instance of class Room
+
+//  !Incursive error because of find 
 const createRoom = ({roomId,visibility='public',size=5}) => {
-  let doesRoomExist = roomInstance.find((room) => room.roomId === roomId);
+  // ?params: true|false
+  let doesRoomExist; 
+ // *Find if the room exists or not  
+ for(let room in roomInstance){
+   if(roomInstance[room].roomId === roomId){
+     doesRoomExist = roomInstance[room].instance?true:false;
+     break;
+   }
+ }
+
   // check if there is already a room with the same ID
   if (doesRoomExist) {
     console.log("Room Already Exist");
@@ -57,10 +97,20 @@ const createRoom = ({roomId,visibility='public',size=5}) => {
   //  console.log(roomInstance);
 };
 
+// !Linear Search Error 
+// const fetchAllSpecifiedRoom = (visibility) => {
+//   const roomMap = new Map(roomInstance.map(room => [room.instance.roomId, room.instance]));
+//   return Array.from(roomMap.values()).filter(room => room.visibility === visibility);
+// };
+// ?visibility:string
 const fetchAllSpecifiedRoom = (visibility) => {
-  return roomInstance
-    .filter(room => room.instance.visibility === visibility)
-    .map(room => room.instance);
+  const specifiedRoom=[];
+  for(let rooms in roomInstance){
+    if(roomInstance[rooms].instance.visibility === visibility){
+      specifiedRoom.push(roomInstance[rooms].instance);
+    }
+  }
+  return specifiedRoom
 }
 
 const fetchAllRooms = () => {
@@ -87,16 +137,28 @@ class Rooms {
      return this.participants[0].uid === moderatorUid? this.code:null;
   }
 
+  // !Incursive error because of find 
+  // TODO: fix this error we are encountering 
   deleteParticipants = (uid) => {
-    const user = this.participants.find(user => user.uid === uid)
-    // finding the index of the user from the participants 
-    const indexOfUser = this.participants.indexOf(user)
-    // gaurd clause if the user doesnt exist in the given list
+    /*
+      *Finding the specified users from the participants[] 
+      *finding the index of the user from the participants 
+      ?type:[{}]
+      ?type:number
+    */
+     let user;
+     let indexOfUser = -1 ;
+    for(let i=0;i<this.participants.length;i++){
+      if(this.participants[i].uid === uid){
+        user = this.participants[i];
+        indexOfUser = i;
+        break;
+      }
+    }
     if(indexOfUser === -1){
-      console.log(`The user doesnt exist in the room ${this.roomId}`);
+      console.log(`The user is not present in the given array`);
       return
     }
-
     // removing the user from the participants list 
     console.log(`The user ${user.name} has been removed from the chatroom ${this.roomId}`);
     this.participants.splice(indexOfUser,1)
@@ -292,6 +354,7 @@ const creatingNewRoom =  (data) => {
 createRoom({roomId:1});
 
 creatingNewRoom({roomId:1,visibility:'public',size:5,participant:{ name: 'HuNTer',roomid: '1',uid: 'P0WfTY92dGdXJ8RFAAAB',score: 100}})
+creatingNewRoom({roomId:1,visibility:'public',size:5,participant:{ name: 'Hassaan',roomid: '1',uid: 'abc',score: 100}})
 creatingNewRoom({roomId:2,visibility:'private',size:5,participant:{ name: 'Hassaan',roomid: '2',uid: 'P0WfTY92dGdXJ8RFAAAB',score: 100}})
 
 const room2 = fetchRoomInstance(2);
@@ -305,9 +368,10 @@ console.log(room2.fetchParticipants());
 // creatingNewRoom({roomId:2,visibility:'private',size:5,participant:{ name: 'xyz',roomid: '2',uid: 'asasdadasd',score: 100}});
 console.log(fetchAllRooms());
 
-
-
-
+const room1 = fetchRoomInstance(1);
+console.log(room1.fetchParticipants());
+console.log(room1.deleteParticipants('abc'));
+console.log(room1.fetchParticipants());
 
 // room3.visibility === 'private'? room3.addParticipant({name: 'ruv',romid: '3',uid: 'P0WfTY92dGdXJ8RFAAAB',score: 100},room3Code):room3.addParticipant({name: 'ruv',roomid: '3',uid: 'P0WfTY92dGdXJ8RFAAAB',score: 100});
 

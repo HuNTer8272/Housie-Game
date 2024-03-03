@@ -26,7 +26,7 @@ function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value
 
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-5 text-white bg-zinc-800">
+    <div className="flex flex-col items-center justify-center h-screen space-y-5 text-white bg-[#5d3323]">
       <input
         type="text"
         onChange={handleChange}
@@ -46,7 +46,7 @@ function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value
         <button
           // onClick={handleJoinRoom}
           disabled={userState.name === ""}
-          className="w-32 py-1 font-medium text-white rounded-full bg-violet-500"
+          className="w-32 py-1 font-medium text-white rounded-full bg-[#edcfae]"
         >
           Join
         </button>

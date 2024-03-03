@@ -3,7 +3,7 @@ import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import server from '../Server/Server';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
-import { UserData, message } from '../Types/Type';
+import { UserData, message, JoinRoomData } from '../Types/Type';
 
 function Chat({ userData }: { userData: UserData }) {
   const [receivedMessages, setReceivedMessages] = useState<message[]>([]);
@@ -50,25 +50,31 @@ function Chat({ userData }: { userData: UserData }) {
     console.log(receivedMessages);
   }, [receivedMessages]);
 
+ 
   return (
-    <div className="bg-[#121212] w-[20%]">
+    <div className="bg-[#ffdc9b] text-gray-50  w-[20%]">
       <div className="h-screen">
         <div className="h-[92%]">
-          Chat area
+         <div className="flex flex-col h-full p-3 overflow-hidden overflow-y-scroll chatArea">
+
           {receivedMessages.map((msg, index) => (
-            <li key={index}>{`${msg.sender}: ${msg.message}`}</li>
-          ))}
+            <div key={index} className={`bg-[#5d3323] flex flex-col space-y-[1px] p-2 px-4 rounded-md font-normal h-fit ${msg.id === userData.uid?'self-end':'self-start'}`}>
+               <h1 className='text-[0.8rem] font-semibold text-[#e3ba88]'>{msg.sender}</h1>
+              <p className='text-[0.8rem]'>{msg.message}</p>
+              </div>
+            ))}
+           </div>
         </div>
-        <div className="bg-zinc-800 h-[8%] flex justify-around items-center relative">
+        <div className="bg-[#5d3323] h-[8%] flex justify-around items-center relative">
           <div className={`absolute left-0 w-full h-[27rem]   -top-[27rem] overflow-hidden ${isEmojiOpened ? 'block' : 'hidden'}`}>
             <Picker data={data} onEmojiSelect={(e: any) => handleEmojiSelect(e.native)} />
           </div>
           <button onClick={toggleIcon}>
-            <HiOutlineEmojiHappy />
+            <HiOutlineEmojiHappy className='text-[#e3ba88] text-xl' />
           </button>
           <input
             placeholder="Type your message"
-            className="outline-none w-[18rem] bg-zinc-700 p-1 rounded-md pl-2"
+            className="outline-none w-[18rem] bg-[#e3ba88] text-gray-50 placeholder-gray-50 p-1 rounded-md pl-2"
             onChange={handleMessage}
             value={message}
             onFocus={() => setIsEmojiOpened(false)}

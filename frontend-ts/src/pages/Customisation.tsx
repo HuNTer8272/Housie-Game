@@ -86,7 +86,7 @@ function Customisation() {
   };
 
   return (
-    <div className="flex items-center justify-center py-20 bg-zinc-800">
+    <div className="flex items-center justify-center py-20 bg-[#5d3323] text-gray-50">
       <form>
         {/* Image upload section */}
         {image === '' ? (
@@ -94,7 +94,7 @@ function Customisation() {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onClick={handleOpenFileDialog}
-            className="bg-slate-600 text-zinc-800 flex justify-center space-x-3 items-center  w-[50rem] h-[30rem] rounded-md"
+            className="bg-[#e3ba88]  flex justify-center space-x-3 items-center  w-[50rem] h-[30rem] rounded-md"
           >
             <input
               type="file"
@@ -119,10 +119,10 @@ function Customisation() {
         {/* font div */}
         <div className="flex mt-10 space-x-3">
             <h1 className='text-xl font-semibold'>Font:</h1> 
-            <select className='text-[1rem]'>
+            <select className='text-[1rem] bg-[#e3ba88] rounded-md p-1 outline-none '>
                  <option value="Times Roman">Times Roman</option>
-                 <option value="Times Roman">Times Roman</option>
-                 <option value="Times Roman">Times Roman</option>
+                 <option value="Times Roman">Calibri</option>
+                 <option value="Times Roman">Arial</option>
             </select>
         </div>
         {/* Image preview */} 
@@ -156,7 +156,7 @@ function Customisation() {
                 </div>
            </div>
         ):(
-          <div className="bg-slate-800 w-[100vh] h-[25vh] mt-3 mb-3 rounded-md"></div>
+          <div className="bg-[#e3ba88] w-[100vh] h-[25vh] mt-3 mb-3 rounded-md"></div>
         )}
       </form>
     </div>

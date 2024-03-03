@@ -34,20 +34,20 @@ function Participants({ userData }: { userData: UserData }): JSX.Element {
   // },[participants])
 
   return (
-    <div className="bg-[#0a0a0a] w-[12%]">
-      <h1 className="bg-[#1c1c1c] text-center p-3 font-semibold -ml-2">
+    <div className="bg-[#e3ba88] text-gray-50 w-[12%]">
+      <h1 className="bg-[#5d3323] text-center p-3 font-semibold -ml-2">
         Participants{' '}
-        <span className="bg-[#555555] p-1 px-2 rounded-md ml-2">{participants.length}</span>
+        <span className="bg-[#e3ba88] p-1 px-2 rounded-md ml-2">{participants.length}</span>
       </h1>
       <div className="px-12 mt-5">
         {participants.map((data, index) => (
           <div
-            className="relative before:content-[''] before:absolute before:w-2 before:h-2 before:bg-[#0f7e65]  before:top-[50%]  before:translate-y-[-50%] before:-left-3 before:rounded-full"
+            className="relative before:content-[''] before:absolute before:w-2 before:h-2 before:bg-[#5d3323]  before:top-[50%]  before:translate-y-[-50%] before:-left-3 before:rounded-full"
             key={index}
           >
-            <pre>
+            <pre className='font-semibold'>
               {data.uid === userData.uid
-                ? data.name + '(You)' + `  ${data.score}`
+                ? data.name + '(You)' + ` ${data.score}`
                 : data.name + `  ${data.score}`}{' '}
             </pre>
           </div>

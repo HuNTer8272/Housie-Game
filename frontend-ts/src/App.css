@@ -23,6 +23,12 @@
 }
 
 
+.chatList::-webkit-scrollbar{
+  display: none;
+}
+.chatArea::-webkit-scrollbar{
+  display: none;
+}
 
 body{
     overflow: hidden;
@@ -40,12 +46,20 @@ body::-webkit-scrollbar{
     background: url('./Images/game\ background\ .png')no-repeat center center/cover;
 }
 
-.chatArea{
+/* .chatArea{
     background: url('./Images/chat\ section.png') no-repeat center center/contain;
-}
+} */
 
 .backendNumberDiv{
     background: url('./Images/number\ patch\ outline\ of\ tickit.png')no-repeat center center/cover ;
+}
+
+.homeImgArea{
+    background: url('./Images/game\ background\ .png')no-repeat center center/cover ;
+}
+
+.homeNavbar{
+    background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));
 }
 
 /* 
