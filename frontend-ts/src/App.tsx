@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Room from './components/Room';
 import Customisation from './pages/Customisation';
 import Payment from './pages/Payment';
+import SignUp from './pages/SignUp'
 
 
 // interface HandleUserDataChange 
@@ -20,7 +21,7 @@ const App:React.FC = () => {
   // const [userData,setUserData] = useState<UserData>(
   const [userData,setUserData] =useState<UserData>(() => {
     const data = localStorage.getItem('userData');
-    return data? JSON.parse(data) : {name:"",roomId:"",uid:"",participant:{name:'',uid:'',roomId:'',score:0}};
+    return data? JSON.parse(data) : {name:"",email:"",password:"", roomId:"",uid:"",participant:{name:'',uid:'',roomId:'',score:0}};
   })
   // whenever the userData state changes save it to local storage 
   
@@ -28,7 +29,7 @@ const App:React.FC = () => {
   // set the uid
   useEffect(() => {
     setUserData(prev =>  ({...prev,uid:server?.id || ''}))
-  },[userData.name])
+  },[userData.email])
 
   useEffect(() => {
     console.log('userData before stringifying:', userData);
@@ -46,15 +47,16 @@ const App:React.FC = () => {
 
   return (
     <div>
-<Routes>
-  <Route path='/' element={<Login handleUserDataChange={handleUserDataChange}/>} />
-  <Route path='/chatroom' element={<Chatroom userData={userData} />} />
-  <Route path='/home' element={<Home userData={userData} />} />
-  <Route path='/room' element={<Room userData={userData} setUserData={setUserData} />} />
-  <Route path='/custom' element={<Customisation />} />
-  <Route path='/payment' element={<Payment/>} />
-  <Route path='*' element={<Error404 />} />
-</Routes>
+      <Routes>
+        <Route path='/' element={<SignUp handleUserDataChange={handleUserDataChange}/>} />
+        <Route path='/login' element={<Login handleUserDataChange={handleUserDataChange}/>}/>
+        <Route path='/chatroom' element={<Chatroom userData={userData} />} />
+        <Route path='/home' element={<Home userData={userData} />} />
+        <Route path='/room' element={<Room userData={userData} setUserData={setUserData} />} />
+        <Route path='/custom' element={<Customisation />} />
+        <Route path='/payment' element={<Payment/>} />
+        <Route path='*' element={<Error404 />} />
+      </Routes>
     </div>
   )
 }

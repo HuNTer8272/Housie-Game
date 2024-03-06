@@ -1,5 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import server from '../Server/Server';
+import CouponPopup from '../components/CouponPopup';
+import QR from '../Images/qr-code.png';
+import coupons from '../Images/promo-code.png';
+import topup from '../Images/wallet.png';
+import withdraw from '../Images/save-money.png'
+// import QR from ""
+// let QR = ''
+// let coupons = ''
+// let topup = ''
 
 declare global {
     interface Window {
@@ -9,6 +18,20 @@ declare global {
 
 
 function Payment() {
+  const [showCouponPopup, setShowCouponPopup] = useState(false);
+
+  const handleCouponButtonClick = () => {
+    setShowCouponPopup(true);
+  };
+
+  const closeCouponPopup = () => {
+    setShowCouponPopup(false);
+  };
+
+  const handleOnApplyCoupon = () =>{
+    
+  }
+
   // useEffect for laoding the razorpay script
   useEffect(() => {
     // Load the Razorpay script dynamically
@@ -68,14 +91,41 @@ function Payment() {
     server.emit('payment', amount);
   }
 
+  const handleRedirect = () =>{
+    window.location.href = "/home";
+  }
+
+  
   return (
     <>
       {/* card */}
-      <div className="bg-gray-200 drop-shadow-md w-[10rem] p-5 m-6 flex flex-col justify-center items-center ">
-        Price: ₹1000
-        <button onClick={() => handlePayment(1000)} className="px-5 text-white bg-black rounded-full">
-          Purchase
-        </button>
+      <div className='h-screen text-gray-100 bg-zinc-800 flex flex-col  gap-4'>
+       
+        <div className='mt-2 ml-8 grid grid-rows-2 grid-cols-2 gap-4'>
+          <div className='flex flex-col justify-center items-start bg-orange-500 w-[95%] h-32  rounded' >
+            <img src={QR} alt='QR' width={"85px"}/>
+            <button onClick={() => handlePayment(100)} className='ml-3'>Scan QR</button>
+          </div>
+          <div className='flex flex-col justify-center items-start bg-orange-500 w-[95%] h-32  rounded' >
+            <img src={coupons} alt='QR' width={"85px"}/>
+            <button onClick={handleCouponButtonClick} className='ml-3'>Coupons</button>
+            <CouponPopup onApplyCoupon={handleOnApplyCoupon} isOpen={showCouponPopup} onClose={closeCouponPopup} />
+          </div>
+          <div className='flex flex-col justify-center items-start bg-orange-500 w-[95%] h-32  rounded' >
+            <img src={topup} alt='QR' width={"85px"}/>
+            <button onClick={() => handlePayment(100)} className='ml-3'>Top Up</button>
+          </div>
+          <div className='flex flex-col justify-center items-start bg-orange-500 w-[95%] h-32  rounded' >
+            <img src={withdraw} alt='QR' width={"85px"}/>
+            <button onClick={() => handlePayment(100)} className='ml-3'>Withdraw</button>
+          </div>
+        </div>
+        <div className='flex justify-center items-center bg-transparent w-[100%] h-16'>
+          <button onClick={handleRedirect} className='text-white bg-indigo-800 rounded-lg p-2 shadow-xl transition duration-300 ease-in-out hover:shadow-indigo-500/50'>
+            Start Playing
+          </button>
+        </div>
+
       </div>
     </>
   );
