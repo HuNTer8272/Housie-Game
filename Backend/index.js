@@ -371,19 +371,20 @@
 
         //function to handle the timer
         timer(socket) {
-          if (this.time > 33) 
-            clearInterval(this.clock);
-          
-          this.time++;
-          socket.in(this.roomId).emit("timer", this.time);
-        }
-
-        //function to start the timer
-        startTimer(socket) {
-          this.clock = setInterval(() => this.timer(socket), 60000);
-        }
-
-        //increament the score of the participant
+          if (this.time >= 33) {
+              clearInterval(this.clock);
+          } else {
+              this.time++;
+              console.log(this.time);
+              socket.in(this.roomId).emit("timer", this.time);
+          }
+      }
+      
+      // Function to start the timer
+      startTimer(socket) {
+          this.clock = setInterval(() => this.timer(socket), 1000);
+      }
+              //increament the score of the participant
         increamentScore(uid,scoreToAdd){
 
           // gaurd clause that check if the participant array is empty or not 
@@ -713,6 +714,7 @@
 
           // start the timer for the particular room 
           socket.on('start-timer', (roomId) => {
+            console.log(roomId);
               let currentRoomInstance = fetchRoomInstance(roomId);
               if(currentRoomInstance === null){
                   socket.emit("error-room-instance", `Cant find the room instance`);
