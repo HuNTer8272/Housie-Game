@@ -433,7 +433,7 @@
 
 
       socket.on('sign-up',(data) => {
-        const checkUserSQL = `SELECT * FROM users WHERE email = ? OR userId = ?`;
+        const checkUserSQL = `SELECT * FROM users WHERE email == ? OR userId = =?`;
         db.query(checkUserSQL,[data.email,data.uid ],(checkUserErr,checkUserRes) =>{
             if(checkUserErr){
               console.log(`Error checking user existence`,checkUserErr);
@@ -465,7 +465,7 @@
       });
 
       socket.on("login", (data) => {
-        const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
+        const sql = 'SELECT * FROM users WHERE email == ? AND password == ?';
         db.query(sql, [data.email, data.password], (err, results) => {
           if (err) {
             console.error('Error querying the database:', err);

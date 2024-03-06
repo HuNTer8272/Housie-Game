@@ -2,8 +2,8 @@ import React, { ChangeEvent, useState } from "react";
 import { NavLink } from "react-router-dom";
 import server from "../Server/Server";
 
-function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value:string) => void}) {
-  const [userState, SetuserState] = useState({ name: ""});
+function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value:string) => void}):JSX.Element {
+  const [userState, SetuserState] = useState({ email:"",password:""});
 
   const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target ;
@@ -26,32 +26,37 @@ function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value
 
 
   return (
+    <>
     <div className="flex flex-col items-center justify-center h-screen space-y-5 text-white bg-[#5d3323]">
-      <input
-        type="text"
-        onChange={handleChange}
-        className="p-1 pl-2+ text-black rounded-md outline-none "
-        name="name"
-        value={userState.name}
-        placeholder="Enter Your Name"
-      />
-      {/* <input
-        type="text"
-        onChange={handleChange}
-        className="p-1 pl-2 text-black rounded-md outline-none "
-        name="roomId"
-        placeholder="Enter Room ID"
-      /> */}
-      <NavLink to={"/home "}>
-        <button
-          // onClick={handleJoinRoom}
-          disabled={userState.name === ""}
-          className="w-32 py-1 font-medium text-white rounded-full bg-[#edcfae]"
-        >
-          Join
-        </button>
-      </NavLink>
+      <div className="flex flex-col items-center space-y-10 h-[30vh] w-[15vw] bg-slate-500 p-6 rounded">
+        <input
+          type="text"
+          onChange={handleChange}
+          className="p-1 pl-2 text-black rounded-md outline-none"
+          name="email"
+          value={userState.email}
+          placeholder="Enter Your Email"
+        />
+        <input
+          type="password"
+          onChange={handleChange}
+          className="p-1 pl-2 text-black rounded-md outline-none"
+          name="password"
+          value={userState.password}
+          placeholder="Enter Your Password"
+        />
+          <NavLink to={"/home "}>
+            <button
+              // onClick={handleJoinRoom}
+              disabled={userState.email === ""}
+              className="w-32 py-1 font-medium text-white rounded-full bg-[#edcfae]"
+            >
+              Join
+            </button>
+          </NavLink>
+      </div>
     </div>
+    </>
   );
 }
 

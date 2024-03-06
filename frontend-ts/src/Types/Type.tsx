@@ -1,5 +1,7 @@
 export interface UserData{
-    name:string;
+    name:string,
+    email:string,
+    password:string,
     roomId:string ,
     uid:string ,
     participant:Participant
