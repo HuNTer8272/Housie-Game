@@ -1,10 +1,14 @@
+import { MdEmail } from 'react-icons/md';
 export interface UserData{
     name:string,
     email:string,
     password:string,
     roomId:string ,
     uid:string ,
+    point:number
     participant:Participant
+    rank:string
+    photoURL:string
   }
 
 export interface Participant{
@@ -50,3 +54,40 @@ export interface JoinRoomData {
  size:number;
  code:string
 }
+
+
+export interface UserState {
+    name:string,
+    email:string,
+    password:string,
+  }
+  
+  
+  export interface BackendStatus<Data> {
+    message:Data,
+    success:boolean
+  }     
+
+  export interface ProfileData {
+    userName: string;
+    email?: string;
+    password?: string;
+    userId: string;
+    photoURL:string;
+    point:number;
+    rank:string;
+  }
+  
+  export interface LoginData {
+    sucess:boolean;
+    message:string;
+    userData:{
+      userId:string,
+      userName:string,
+      photoURL:string
+      password:string,
+      rank:string,
+      point:number
+      email:string;
+    }
+  } 

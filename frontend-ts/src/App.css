@@ -62,6 +62,25 @@ body::-webkit-scrollbar{
     background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));
 }
 
+
+.signupPageDiv{
+    background:url('./Images/HB_Bg\ Final.jpeg.jpg')no-repeat center center/cover ;
+    position: relative;
+}
+
+.signupPageDiv::after{
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7));
+    z-index: 1;
+}
+
+
+.customisationBg{
+    background:url('./Images/customisation.png')
+}
 /* 
 .homeNavbar::before{
   content: '';

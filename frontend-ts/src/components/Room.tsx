@@ -423,10 +423,10 @@ function Room({
                   </div>
               </div>
             ) : (
-              <div className=" w-[98%] h-full">
+              <div className=" w-[98%] h-full ">
                 {participants.map((room, index) => (
               <div
-                className="w-[98%] bg-[#b6815a] p-2 rounded-md text-white font-semibold flex justify-between px-5"
+                className="w-[98%] bg-[#b6815a] p-2 rounded-md text-white font-semibold flex justify-between px-5 mb-4"
                 key={index}
                 onClick={() =>
                   handleJoin(room.roomId, room.visibility, room.name)

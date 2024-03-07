@@ -33,12 +33,12 @@
         host:"localhost",
         user:"root",
         password:"",
-        database:"housie"
+        database:"housie-game"
       })
 
       db.connect(function(err){
         if(err){
-          console.log("Error in connection")
+          console.log("Error in connection",err)
         }else{
           console.log("connected")
         }
@@ -430,56 +430,113 @@
       // all the backend routes here
       io.on('connection',(socket) => {
         console.log(`user has connected to the server: ${socket.id}`);
-
-
-      socket.on('sign-up',(data) => {
-        const checkUserSQL = `SELECT * FROM users WHERE email == ? OR userId = =?`;
-        db.query(checkUserSQL,[data.email,data.uid ],(checkUserErr,checkUserRes) =>{
-            if(checkUserErr){
-              console.log(`Error checking user existence`,checkUserErr);
-              return 
-            }
-          
-            if(checkUserRes.length > 0 ){
-              const updateUserSQL = `UPDATE users SET userName = ? ,UserPass = ? WHERE email = ?`;
-              db.query(updateUserSQL,[data.name,data.password,data.email],(updateUserErr,updateUserResult) => {
-                if(updateUserErr){
-                  console.error(`Error updating user information` ,updateUserErr);
+   
+        // !emit signup-completed not working
+        socket.on('sign-up', (data) => {
+          // Check if the user exists or not
+          console.log('Storing the data in the database...');
+          const checkUserSQL = `SELECT * FROM users WHERE email = ? OR userId = ?`;
+          db.query(checkUserSQL, [data.email, data.uid], (checkUserSQLErr, checkUserSQLRes) => {
+              if (checkUserSQLErr) {
+                  console.log(`Error checking user existence`, checkUserSQLErr);
                   return;
-                }
-
-              })
-            } else {
-
-              const insertUserSQL = 'INSERT INTO users(userId,userName,email,password,point,rank) VALUE (?,?,?,?,?,?)';
-              db.query(insertUserSQL,[data.uid,data.name,data.email,data.password],(insertUserErr,insertUserResult) => {
-                if(insertUserErr){
-                  console.error(`Error storing `, insertUserErr);
-                  return ;
-                }
-                console.log(insertUserResult);
-              })
-            }
-            
-        })
+              }
+      
+              if (checkUserSQLRes.length > 0) {
+                  const updateUserSQL = `UPDATE users SET userName = ?, password = ? WHERE email = ?`;
+                  db.query(updateUserSQL, [data.name, data.password, data.email], (updateUserErr, updateUserResult) => {
+                      if (updateUserErr) {
+                          console.error(`Error updating user information`, updateUserErr);
+                          return;
+                      }
+                      socket.emit('signup-completed', { success: true, message: 'User signed up successfully' });
+                      console.log('User data updated in the database:', updateUserResult);
+                      return;
+                  });
+              } else {
+                  // If the user doesn't exist then add them
+                  const insertSQL = 'INSERT INTO users(userId, userName, email, password, point, rank, photoURL) VALUES (?, ?, ?, ?, ?, ?, ?)';
+                  db.query(insertSQL, [data.uid, data.name, data.email, data.password, data.point, data.rank, data.photoURL], (insertSQLErr, insertSQLResult) => {
+                      if (insertSQLErr) {
+                          console.error(`Error storing user`, insertSQLErr);
+                          return;
+                      }
+                      socket.emit('signup-completed', { success: true, message: 'User signed up successfully' });
+                      console.log("user instered in the database",insertSQLResult);
+                  });
+              }
+          });
       });
-
+      
+      // !emit login-completed not working
       socket.on("login", (data) => {
-        const sql = 'SELECT * FROM users WHERE email == ? AND password == ?';
+        const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
         db.query(sql, [data.email, data.password], (err, results) => {
           if (err) {
             console.error('Error querying the database:', err);
-            res.status(500).json({ success: false, message: 'Internal Server Error' });
             return;
           }
-
+          
           if (results.length > 0) {
-            res.json({ success: true });
-          } else {
-            res.json({ success: false });
+            console.log('User exists');
+            console.log('login',results);
+            socket.emit('login-completed', {  success: true, message: 'Login successful' });
+          } else {  
+            console.log('User does not exist');
+            socket.emit('login-completed', { success: false, message: 'User does not exist',userData:results });
           }
         });
       });
+            
+
+      // * fetch-user data 
+      // !profile-data emit is not working 
+      socket.on('fetch-profile-data', (data) => {
+        const sql = 'SELECT * FROM users WHERE email = ? OR userId = ?';
+        db.query(sql, [data.email, data.userId], (err, res) => {
+          if (err) {
+            console.error('Error fetching profile data', err);
+            return;
+          }
+      
+          if (res.length > 0) {
+            const userData = res[0]; // Assuming there's only one matching row
+            console.log('profileData',userData);
+            socket.emit('profile-data', { success: true, data: userData });
+          } else {
+            console.log('User does not exist');
+            socket.emit('profile-data', { success: false, message: 'User does not exist' });
+          }
+        });
+      });
+
+      // * change user profile
+      // !change-profile emit is not working
+      socket.on('change-profile', (data) => {
+        console.log(data);
+        const sql = 'SELECT * FROM users WHERE email = ? OR userId = ?';
+        db.query(sql, [data.email, data.uid], (err, res) => {
+          if (err) {
+            console.log('Error fetching profile data', err);
+            return;
+          }
+      
+          if (res.length > 0) {
+            const updateProfileSQL = `UPDATE users SET userName = ?, photoURL = ? WHERE email = ? OR userId = ?`;
+            db.query(updateProfileSQL, [data.name, data.photoURL, data.email, data.uid], (updateProfileErr, updateProfileResult) => {
+              if (updateProfileErr) {
+                console.error('Error updating profileData:', updateProfileErr);
+                return;
+              }
+              console.log('User profile updated successfully');
+              console.log("update query result:",updateProfileResult);
+              // Emit success event
+              socket.emit('profile-data', { success: true, message: 'Profile updated successfully' });
+            });
+          }
+        });
+      });
+      
 
       // For handling room join
       /*

@@ -86,7 +86,7 @@ function Customisation() {
   };
 
   return (
-    <div className="flex items-center justify-center py-20 bg-[#5d3323] text-gray-50">
+    <div className="flex items-center justify-center py-20 bg-[#5d3323] customisationBg text-gray-50">
       <form>
         {/* Image upload section */}
         {image === '' ? (

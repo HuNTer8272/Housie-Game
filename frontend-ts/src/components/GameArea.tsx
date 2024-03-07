@@ -27,6 +27,7 @@ function GameArea({userData}:{userData:UserData}) {
 
     // Fetch time
     const fetchTime = (data:number) => {
+      console.log('time recived by the frontend is : ',data);
       setTime(data);
       // console.log(`Time:${time}`);
     }
