@@ -79,7 +79,9 @@ body::-webkit-scrollbar{
 
 
 .customisationBg{
-    background:url('./Images/customisation.png')
+    background:url('./Images/customisation.png') center center / cover no-repeat;
+    padding-bottom: 10rem;
+    
 }
 /* 
 .homeNavbar::before{

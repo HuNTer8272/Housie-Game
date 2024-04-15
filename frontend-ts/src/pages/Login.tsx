@@ -18,11 +18,11 @@ function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value
         if(data.message){
           console.log(data.message);
           navigate('/home');
-          handleUserDataChange('uid', data.userData.userId);
-          handleUserDataChange('name', data.userData.userName);
-          handleUserDataChange('point', data.userData.point.toString());
-          handleUserDataChange('rank', data.userData.rank);
-          handleUserDataChange('photoURL', data.userData.photoURL);
+          handleUserDataChange('uid', data.userData?.userId);
+          handleUserDataChange('name', data.userData?.userName);
+          handleUserDataChange('point', data.userData?.point.toString());
+          handleUserDataChange('rank', data.userData?.rank);
+          handleUserDataChange('photoURL', data.userData?.photoURL);
 
         }  
 
@@ -34,7 +34,7 @@ function Login({ handleUserDataChange }:{handleUserDataChange:(name:string,value
     return () => {
       server.off('login-completed',handleLoginCompleted)
     }
-  })
+  },[])
 
   const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target ;

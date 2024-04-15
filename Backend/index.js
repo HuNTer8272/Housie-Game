@@ -537,6 +537,31 @@
         });
       });
       
+      socket.on('store-customisation', (data) => {
+        console.log(data);
+        const sql = 'SELECT * FROM users WHERE email = ? OR userId = ?';
+        db.query(sql, [data.email, data.uid], (err, res) => {
+          if (err) {
+            console.log('Error fetching profile data', err);
+            return;
+          }
+      
+          if (res.length > 0) {
+            const updateProfileSQL = `UPDATE users SET fontStyle = ?, ticketImage = ? WHERE email = ? OR userId = ?`;
+            db.query(updateProfileSQL, [data.fontStyle, data.ticketImage, data.email, data.uid], (updateProfileErr, updateProfileResult) => {
+              if (updateProfileErr) {
+                console.error('Error updating profileData:', updateProfileErr);
+                return;
+              }
+              console.log('User profile updated successfully');
+              console.log("update query result:",updateProfileResult);
+              // Emit success event
+              socket.emit('profile-data', { success: true, message: 'Profile updated successfully' });
+            });
+          }
+        });
+      });
+      
 
       // For handling room join
       /*

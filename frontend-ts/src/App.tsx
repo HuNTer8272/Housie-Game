@@ -38,12 +38,9 @@ const App:React.FC = () => {
     console.log('Saved Succefully....',userData);
  },[userData]);
 
-  useEffect(() => {
-   console.log('userData: ', userData);
-  },[userData])
 
   const handleUserDataChange = (name: string, value: string): void => {
-    // console.log(name,value);
+    console.log(name,value);
     setUserData({
       ...userData,
       [name]: value,
@@ -62,7 +59,7 @@ const App:React.FC = () => {
         <Route path='/chatroom' element={<Chatroom userData={userData} />} />
         <Route path='/home' element={<Home userData={userData} />} />
         <Route path='/room' element={<Room userData={userData} setUserData={setUserData} />} />
-        <Route path='/custom' element={<Customisation />} />
+        <Route path='/custom' element={<Customisation userData={userData} />} />
         <Route path='/payment' element={<Payment/>} />
         <Route path='*' element={<Error404 />} />
       </Routes>

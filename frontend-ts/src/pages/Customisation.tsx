@@ -1,6 +1,9 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { IoMdPhotos } from 'react-icons/io';
 import { MdModeEditOutline } from 'react-icons/md';
+import { ProfileData, UserData } from '../Types/Type';
+import server from '../Server/Server';
+
 
 const insertRandomNumbers = (arr:any[], numOfNumbers:number) => {
   const newArray = arr.slice();
@@ -32,9 +35,11 @@ const insertRandomNumbers = (arr:any[], numOfNumbers:number) => {
 };
 
 
-function Customisation() {
+function Customisation({userData}:{userData:UserData})  {
+  const [profileData, setProfileData] = useState<ProfileData | undefined>(undefined);
   const [image, setImage] = useState('');
   const [url, setUrl] = useState('');
+  const [font,setFont] = useState('Times Roman');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
    // array for creating housie tickets 
@@ -44,6 +49,7 @@ function Customisation() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
   ]);
 
+
   // when the page loads change the arr state to the housie ticket format
   useEffect(() => {
     const updatedArr = arr.map(innerArr => insertRandomNumbers(innerArr, 5));
@@ -51,24 +57,75 @@ function Customisation() {
     setArr(updatedArr);
   }, []);
 
-  const handleDrop = (e:any) => {
+
+ 
+  useEffect(() => {
+    const fetchUserData = (data:any) => {
+      console.log("seting user data", data);
+      setProfileData(data.data);
+    };
+    server.on("profile-data", fetchUserData);
+
+    server.emit("fetch-profile-data", {
+      email: userData?.email,
+      userId: userData?.uid,
+    });
+    return () => {
+      server.off("profile-data", fetchUserData);
+    };
+  }, []);
+
+  const handleDrop = async (e:any) => {
     e.preventDefault();
     if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      const imageUrl = URL.createObjectURL(file);
+      // const imageUrl = URL.createObjectURL(file);
+      const imageUrl = await createImageUrl(file);
+      console.log("imageURL", imageUrl);
       setUrl(imageUrl);
       setImage(file);
     }
   };
 
+  const createImageUrl = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          const aspectRatio = image.width / image.height;
+          const newHeight = image.height;
+          const newWidth = newHeight * aspectRatio;
+  
+          const canvas = document.createElement("canvas");
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+  
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(image, 0, 0, newWidth, newHeight);
+            resolve(canvas.toDataURL("image/jpeg"));
+          } else {
+            reject("Error creating canvas context");
+          }
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+
   const handleDragOver = (e:any) => {
     e.preventDefault();
   };
 
-  const handleFileInputChange = (e:any) => {
+  const handleFileInputChange = async (e:any) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const imageUrl = URL.createObjectURL(file);
+      // const imageUrl = URL.createObjectURL(file);
+      const imageUrl = await createImageUrl(file);
+      // console.log(imageUrl);
       setUrl(imageUrl);
       setImage(file);
     }
@@ -85,9 +142,29 @@ function Customisation() {
     }
   };
 
+  const handleChange = (e:any) =>{
+    setFont(e.target.value);
+  }
+
+  const handleSubmit = () => {
+    if(image === ''){
+      alert("Please upload an image");
+      return ;
+    }
+    console.log(url);
+    server.emit("store-customisation", {
+      email: profileData?.email,
+      userId: profileData?.userId,
+      name: profileData?.userName,
+      ticketImage: url,
+      fontStyle:font
+    });
+
+  }
+
   return (
-    <div className="flex items-center justify-center py-20 bg-[#5d3323] customisationBg text-gray-50">
-      <form>
+    <div className="flex items-center relative justify-center py-20 bg-[#5d3323] customisationBg text-gray-50">
+      <form className='p-10'>
         {/* Image upload section */}
         {image === '' ? (
           <div
@@ -119,10 +196,10 @@ function Customisation() {
         {/* font div */}
         <div className="flex mt-10 space-x-3">
             <h1 className='text-xl font-semibold'>Font:</h1> 
-            <select className='text-[1rem] bg-[#e3ba88] rounded-md p-1 outline-none '>
+            <select onChange={handleChange} className='text-[1rem] bg-[#e3ba88] rounded-md p-1 outline-none '>
                  <option value="Times Roman">Times Roman</option>
-                 <option value="Times Roman">Calibri</option>
-                 <option value="Times Roman">Arial</option>
+                 <option value="Calibri">Calibri</option>
+                 <option value="Arial">Arial</option>
             </select>
         </div>
         {/* Image preview */} 
@@ -158,6 +235,7 @@ function Customisation() {
         ):(
           <div className="bg-[#e3ba88] w-[100vh] h-[25vh] mt-3 mb-3 rounded-md"></div>
         )}
+        <button onClick={handleSubmit} className='bg-[#e3ba88] absolute top-0 right-3 px-8 mt-3 p-1  rounded-full'>Save</button>
       </form>
     </div>
   );
